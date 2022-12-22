@@ -53,17 +53,20 @@ int main(int argc, char **argv){
         else printf("Could not get the information. Please check the parameters.\n");
     } else if (option == 2){
         struct user_inode_struct inode;
+        int path_size;
         char *path = argv[2];
-        struct inode_parameters inode_params = { .write_pointer = &inode, .path = path};
+        path_size = strlen(path);
+
+        struct inode_parameters inode_params = { .write_pointer = &inode, .path = path , .path_len = path_size};
 
         uint8_t ret = ioctl(fd, IOCTL_GET_INODE_STRUCT, &inode_params);
         if (ret == 0) {
             printf("inode number: %llu\n", inode.i_ino);
             printf("inode file size: %llu\n", inode.i_size);
             printf("inode references count: %lu\n", inode.i_count);
-//            printf("inode access permissions: %llu\n", inode.i_mode);
-//            printf("inode last modify time: %lu", inode.i_mtime);
-//            printf("inode hard link count: %d", inode.i_nlink);
+                printf("inode access permissions: %llu\n", inode.i_mode);
+                printf("inode last modify time: %lu\n", inode.i_mtime);
+                printf("inode hard link count: %d\n", inode.i_nlink);
         }
         else printf("Could not get the information. Please check the parameters.\n");
     }

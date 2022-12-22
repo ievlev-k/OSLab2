@@ -56,6 +56,7 @@ long device_ioctl(struct file* file,  unsigned int cmd, unsigned long arg){
             pr_err("Could not read thread with PID %d\n", thread_params.pid);
             return -1;
         }
+
         thread = task->thread;
         ret_thread.es = thread.es;
         ret_thread.ds = thread.ds;
@@ -71,28 +72,26 @@ long device_ioctl(struct file* file,  unsigned int cmd, unsigned long arg){
             return -1;
         }
 
-
-        printk(inode_params.path);
-
-
-
-
+        char *path_file = kmalloc(inode_params.path_len, GFP_KERNEL);
+        if (copy_from_user(path_file, inode_params.path, inode_params.path_len) != 0){
+            pr_err("Path not found!\n");
+            return -1;
+        }
+        printk(path_file);
         if ( kern_path(inode_params.path, LOOKUP_FOLLOW, &path) != 0){
             pr_err("File not found!\n");
             return  -1;
         }
 
-
-
         inode = path.dentry-> d_inode;
         ret_inode.i_ino = inode -> i_ino;
         ret_inode.i_count = inode -> i_count.counter;
-//        ret_inode.i_mode = (unsigned  long long )inode -> i_mode;
+        ret_inode.i_mode = (unsigned  long long )inode -> i_mode;
         ret_inode.i_size = inode -> i_size;
-//        ret_inode.i_mtime = inode -> i_mtime.tv_sec;
-//        ret_inode.i_nlink = inode -> i_nlink;
-
-        copy_to_user(inode_params.write_pointer, &ret_thread, sizeof (struct inode_parameters));
+        ret_inode.i_mtime = inode -> i_mtime.tv_sec;
+        ret_inode.i_nlink = inode -> i_nlink;
+        printk(inode -> i_size);
+        copy_to_user(inode_params.write_pointer, &ret_inode, sizeof (struct user_inode_struct));
 
 
     }

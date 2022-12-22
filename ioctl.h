@@ -23,10 +23,10 @@ struct thread_parameters {
 
 struct user_inode_struct{
     unsigned long long i_ino; /* номер индекса */
-//    unsigned long long i_mode; /* права доступа */
-//    unsigned int  i_nlink;        /* количество жестких ссылок */
+    unsigned long long i_mode; /* права доступа */
+    unsigned int  i_nlink;        /* количество жестких ссылок */
     unsigned long long  i_size;         /* размер файла в байтах */
-//    unsigned long i_mtime;  /* время последнего изменения файла в наносекундах*/
+    unsigned long i_mtime;  /* время последнего изменения файла в наносекундах*/
     unsigned long  i_count;        /* счетчик ссылок */
 
 };
@@ -34,6 +34,7 @@ struct user_inode_struct{
 struct inode_parameters{
     struct user_inode_struct* write_pointer;
     char *path;
+    int path_len;
 };
 
 
